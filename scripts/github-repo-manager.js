@@ -295,8 +295,11 @@ For detailed documentation, see: GITHUB_REPOSITORY_MANAGEMENT_GUIDE.md
                 }
             } catch (error) {
                 console.error(`❌ Failed to prepare package: ${error.message}`);
+<<<<<<< HEAD
                 // Ensure we're in the correct directory after error
                 process.chdir(this.uiPlatformRoot);
+=======
+>>>>>>> bebf383b81452914f92d944caf7aca470c3a1217
                 return false;
             }
         }
@@ -375,14 +378,20 @@ For detailed documentation, see: GITHUB_REPOSITORY_MANAGEMENT_GUIDE.md
             console.log('📦 Publishing to NPM...');
             execSync('npm publish', { stdio: 'inherit' });
             
+<<<<<<< HEAD
             // Always return to original directory
+=======
+>>>>>>> bebf383b81452914f92d944caf7aca470c3a1217
             process.chdir(originalDir);
             
             console.log(`✅ Package ${packageName} published to NPM successfully!`);
             return true;
         } catch (error) {
             console.error(`❌ NPM publish failed: ${error.message}`);
+<<<<<<< HEAD
             // Ensure we return to original directory even on error
+=======
+>>>>>>> bebf383b81452914f92d944caf7aca470c3a1217
             process.chdir(this.uiPlatformRoot);
             return false;
         }
@@ -476,12 +485,18 @@ For detailed documentation, see: GITHUB_REPOSITORY_MANAGEMENT_GUIDE.md
                 console.log('ℹ️  No changes to commit');
             }
             
+<<<<<<< HEAD
             // Always return to original directory
+=======
+>>>>>>> bebf383b81452914f92d944caf7aca470c3a1217
             process.chdir(originalDir);
             return true;
         } catch (error) {
             console.error(`❌ Sync failed: ${error.message}`);
+<<<<<<< HEAD
             // Ensure we return to original directory even on error
+=======
+>>>>>>> bebf383b81452914f92d944caf7aca470c3a1217
             process.chdir(this.uiPlatformRoot);
             return false;
         }
@@ -491,6 +506,7 @@ For detailed documentation, see: GITHUB_REPOSITORY_MANAGEMENT_GUIDE.md
         return this.defaultOwner;
     }
 
+<<<<<<< HEAD
     ensureCorrectDirectory() {
         // Always ensure we're in the ui-platform root directory
         if (process.cwd() !== this.uiPlatformRoot) {
@@ -499,6 +515,8 @@ For detailed documentation, see: GITHUB_REPOSITORY_MANAGEMENT_GUIDE.md
         }
     }
 
+=======
+>>>>>>> bebf383b81452914f92d944caf7aca470c3a1217
     createGitignore(packageDir) {
         const gitignoreContent = `# Dependencies
 node_modules/
@@ -692,7 +710,10 @@ async function main() {
 
         case 'status':
             await manager.showStatus();
+<<<<<<< HEAD
             manager.ensureCorrectDirectory();
+=======
+>>>>>>> bebf383b81452914f92d944caf7aca470c3a1217
             break;
 
         case 'create':
@@ -701,7 +722,10 @@ async function main() {
                 process.exit(1);
             }
             await manager.createRepository(packageName, options);
+<<<<<<< HEAD
             manager.ensureCorrectDirectory();
+=======
+>>>>>>> bebf383b81452914f92d944caf7aca470c3a1217
             break;
 
         case 'prepare':
@@ -710,7 +734,10 @@ async function main() {
                 process.exit(1);
             }
             await manager.preparePackage(packageName, options);
+<<<<<<< HEAD
             manager.ensureCorrectDirectory();
+=======
+>>>>>>> bebf383b81452914f92d944caf7aca470c3a1217
             break;
 
         case 'publish':
@@ -719,7 +746,10 @@ async function main() {
                 process.exit(1);
             }
             await manager.publishWorkflow(packageName, options);
+<<<<<<< HEAD
             manager.ensureCorrectDirectory();
+=======
+>>>>>>> bebf383b81452914f92d944caf7aca470c3a1217
             break;
 
         case 'validate':
@@ -728,7 +758,10 @@ async function main() {
                 process.exit(1);
             }
             await manager.validateRepository(packageName);
+<<<<<<< HEAD
             manager.ensureCorrectDirectory();
+=======
+>>>>>>> bebf383b81452914f92d944caf7aca470c3a1217
             break;
 
         case 'sync':
@@ -737,12 +770,18 @@ async function main() {
                 process.exit(1);
             }
             await manager.syncPackage(packageName, options);
+<<<<<<< HEAD
             manager.ensureCorrectDirectory();
+=======
+>>>>>>> bebf383b81452914f92d944caf7aca470c3a1217
             break;
 
         case 'list':
             await manager.listPackages();
+<<<<<<< HEAD
             manager.ensureCorrectDirectory();
+=======
+>>>>>>> bebf383b81452914f92d944caf7aca470c3a1217
             break;
 
         default:
