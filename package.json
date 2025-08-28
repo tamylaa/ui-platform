@@ -72,6 +72,7 @@
     "docs:serve": "http-server docs -p 8080",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
+    "prepublishOnly": "npm run build",
     "sync:preview": "node scripts/sync-repositories.js",
     "sync:repositories": "node scripts/sync-repositories.js --sync",
     "publish:validate": "node scripts/publish.js validate",
@@ -106,6 +107,10 @@
     "@rollup/plugin-commonjs": "^25.0.8",
     "@rollup/plugin-node-resolve": "^15.3.1",
     "@rollup/plugin-typescript": "^11.1.6",
+    "@semantic-release/commit-analyzer": "^11.1.0",
+    "@semantic-release/github": "^9.2.6",
+    "@semantic-release/npm": "^11.0.2",
+    "@semantic-release/release-notes-generator": "^12.1.0",
     "@storybook/addon-essentials": "^7.6.6",
     "@storybook/addon-interactions": "^7.6.6",
     "@storybook/addon-links": "^7.6.6",
@@ -135,6 +140,7 @@
     "rimraf": "^5.0.5",
     "rollup": "^4.49.0",
     "rollup-plugin-dts": "^6.2.3",
+    "semantic-release": "^22.0.12",
     "storybook": "^7.6.6",
     "typedoc": "^0.25.4",
     "typescript": "^5.4.5"
@@ -175,5 +181,22 @@
   "bugs": {
     "url": "https://github.com/tamylaa/ui-platform/issues"
   },
-  "homepage": "https://github.com/tamylaa/ui-platform#readme"
+  "homepage": "https://github.com/tamylaa/ui-platform#readme",
+  "release": {
+    "branches": [
+      "master"
+    ],
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      [
+        "@semantic-release/npm",
+        {
+          "npmPublish": true,
+          "tarballDir": "dist"
+        }
+      ],
+      "@semantic-release/github"
+    ]
+  }
 }

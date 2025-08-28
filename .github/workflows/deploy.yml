@@ -92,7 +92,7 @@ jobs:
           README.md
         retention-days: 30
 
-  publish:
+  semantic-release:
     runs-on: ubuntu-latest
     needs: [test, build]
     if: github.ref == 'refs/heads/master' && github.event_name == 'push'
@@ -109,51 +109,88 @@ jobs:
         node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
         registry-url: 'https://registry.npmjs.org'
+        scope: '@tamyla'
     
     - name: Install dependencies
       run: npm install
     
-    - name: Get package version
-      id: package-version
-      run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+    - name: Build for release
+      run: npm run build
     
-    - name: Build for production (if applicable)
+    - name: Semantic Release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_GITHUB_ACTION_AUTO }}
       run: |
-        if npm run prepublishOnly --dry-run 2>/dev/null; then
-          npm run prepublishOnly
-        elif npm run build --dry-run 2>/dev/null; then
-          npm run build
-        else
-          echo "No build step required"
+        if [ -z "$NODE_AUTH_TOKEN" ]; then
+          echo "NPM_GITHUB_ACTION_AUTO not available - skipping semantic release"
+          exit 0
         fi
+        npx semantic-release
+      continue-on-error: true
+
+  publish-packages:
+    runs-on: ubuntu-latest
+    needs: semantic-release
+    if: github.ref == 'refs/heads/master'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Use Node.js 18.x
+      uses: actions/setup-node@v4
+      with:
+        node-version: 18.x
+        cache: 'npm'
+        registry-url: 'https://registry.npmjs.org'
+        scope: '@tamyla'
+    
+    - name: Install dependencies
+      run: npm install
+    
+    - name: Build packages
+      run: npm run build
     
     - name: Publish to NPM
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_GITHUB_ACTION_AUTO }}
       run: |
-        # Check if this version is already published
-        VERSION="${{ steps.package-version.outputs.version }}"
-        if npm view @tamyla/ui-platform@$VERSION version 2>/dev/null; then
-          echo "Version $VERSION already published, skipping..."
+        if [ -z "$NODE_AUTH_TOKEN" ]; then
+          echo "NPM_GITHUB_ACTION_AUTO not available - skipping publish"
           exit 0
         fi
-        
-        # Publish the package
+        # Publish UI Platform package
         npm publish --access public
-        echo "Published @tamyla/ui-platform@$VERSION to NPM"
+
+  deploy-cdn:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/master'
     
-    - name: Create GitHub Release
-      if: success()
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
       with:
-        tag_name: v${{ steps.package-version.outputs.version }}
-        release_name: Release v${{ steps.package-version.outputs.version }}
-        body: |
-          ## What's Changed
-          - UI Platform updated to v${{ steps.package-version.outputs.version }}
-          - Modular script system with utilities
-          - Built and published automatically via GitHub Actions
-        draft: false
-        prerelease: false
+        name: ui-platform-files
+        path: dist/
+    
+    - name: Deploy to CDN
+      env:
+        CDN_API_KEY: ${{ secrets.CDN_API_KEY }}
+        CDN_ENDPOINT: ${{ secrets.CDN_ENDPOINT }}
+      run: |
+        # Upload to CDN (UI Platform)
+        for file in dist/*.js dist/*.css; do
+          if [ -f "$file" ]; then
+            curl -X PUT \
+              -H "Authorization: Bearer $CDN_API_KEY" \
+              -H "Content-Type: application/octet-stream" \
+              --data-binary "@$file" \
+              "$CDN_ENDPOINT/tamyla-ui-platform/$(basename $file)"
+          fi
+        done
+      continue-on-error: true
