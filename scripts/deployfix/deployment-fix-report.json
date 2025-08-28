@@ -1,0 +1,54 @@
+{
+  "timestamp": "2025-08-28T10:48:28.142Z",
+  "fixes": [
+    {
+      "component": "ui-components",
+      "fix": "Update Jest configuration for Node 18+ compatibility",
+      "status": "success"
+    },
+    {
+      "component": "ui-components",
+      "fix": "Update package.json test script",
+      "status": "success"
+    },
+    {
+      "component": "ui-components",
+      "fix": "Clear Jest cache and reinstall",
+      "status": "failed",
+      "error": "Command failed: npx jest --clearCache\nnpm warn config ignoring workspace config at C:\\Users\\Admin\\Documents\\coding\\tamyla\\ui-platform\\packages\\ui-components/.npmrc\n● Validation Warning:\n\n  Unknown option \"moduleNameMapping\" with value {\"\\\\.(css|less|scss|sass)$\": \"identity-obj-proxy\"} was found.\n  This is probably a typing mistake. Fixing it will remove this message.\n\n  Configuration Documentation:\n  https://jestjs.io/docs/configuration\n\n● Validation Error:\n\n  Module <rootDir>/src/setupTests.js in the setupFilesAfterEnv option was not found.\n         <rootDir> is: C:\\Users\\Admin\\Documents\\coding\\tamyla\\ui-platform\\packages\\ui-components\n\n  Configuration Documentation:\n  https://jestjs.io/docs/configuration\n\n"
+    },
+    {
+      "component": "ui-components-react",
+      "fix": "Update package.json for better publishing",
+      "status": "success"
+    },
+    {
+      "component": "ui-components-react",
+      "fix": "Create .npmrc for CI environment",
+      "status": "success"
+    },
+    {
+      "component": "ui-components-react",
+      "fix": "Update workflow dependencies check",
+      "status": "success"
+    },
+    {
+      "component": "ui-components",
+      "fix": "local_test",
+      "status": "failed",
+      "error": "Command failed: npm install\nnpm warn config ignoring workspace config at C:\\Users\\Admin\\Documents\\coding\\tamyla\\ui-platform\\packages\\ui-components/.npmrc\nnpm error code EUNSUPPORTEDPROTOCOL\nnpm error Unsupported URL Type \"workspace:\": workspace:*\nnpm error A complete log of this run can be found in: C:\\Users\\Admin\\Documents\\coding\\Project 1\\npm-cache\\_logs\\2025-08-28T10_48_25_362Z-debug-0.log\n"
+    },
+    {
+      "component": "ui-components-react",
+      "fix": "local_test",
+      "status": "failed",
+      "error": "Command failed: npm install\nnpm warn config ignoring workspace config at C:\\Users\\Admin\\Documents\\coding\\tamyla\\ui-platform\\packages\\ui-components-react/.npmrc\nnpm error code EUNSUPPORTEDPROTOCOL\nnpm error Unsupported URL Type \"workspace:\": workspace:*\nnpm error A complete log of this run can be found in: C:\\Users\\Admin\\Documents\\coding\\Project 1\\npm-cache\\_logs\\2025-08-28T10_48_26_931Z-debug-0.log\n"
+    }
+  ],
+  "summary": {
+    "total": 8,
+    "successful": 5,
+    "failed": 3,
+    "successRate": 63
+  }
+}

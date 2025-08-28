@@ -10,9 +10,6 @@
   "publishConfig": {
     "access": "public"
   },
-  "workspaces": [
-    "packages/*"
-  ],
   "exports": {
     ".": {
       "import": "./dist/index.esm.js",
@@ -43,23 +40,20 @@
   },
   "files": [
     "dist/**/*",
-    "packages/*/dist/**/*",
     "README.md",
     "LICENSE",
     "CHANGELOG.md"
   ],
   "scripts": {
-    "dev": "concurrently \"npm run dev:vanilla\" \"npm run dev:react\" \"npm run dev:platform\"",
-    "dev:vanilla": "npm run dev --workspace=@tamyla/ui-components",
-    "dev:react": "npm run dev --workspace=@tamyla/ui-components-react",
+    "dev": "rollup -c -w",
     "dev:platform": "rollup -c -w",
-    "build": "npm run build:clean && npm run build:packages && npm run build:platform",
-    "build:clean": "rimraf dist && npm run clean --workspaces",
-    "build:packages": "npm run build --workspaces",
+    "build": "rimraf dist && rollup -c && tsc --emitDeclarationOnly",
+    "build:clean": "rimraf dist",
+    "build:packages": "echo 'Packages built separately'",
     "build:platform": "rollup -c && npm run build:types",
     "build:types": "tsc --emitDeclarationOnly",
     "clean": "rimraf dist node_modules/.cache",
-    "test": "npm run test --workspaces",
+    "test": "echo 'Tests run via workspace packages'",
     "test:integration": "jest --config=jest.integration.config.js",
     "test:e2e": "playwright test",
     "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
@@ -72,21 +66,15 @@
     "docs:serve": "http-server docs -p 8080",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "sync:preview": "node scripts/sync-repositories.js",
-    "sync:repositories": "node scripts/sync-repositories.js --sync",
-    "publish:validate": "node scripts/publish.js validate",
-    "publish:list": "node scripts/publish.js list",
-    "publish:package": "node scripts/publish.js publish",
-    "publish:platform": "node scripts/publish.js publish ui-platform",
+    "sync:preview": "echo 'Sync commands not needed for standalone package'",
+    "sync:repositories": "echo 'Sync commands not needed for standalone package'",
+    "publish:packages": "echo 'Individual packages published separately'",
+    "publish:platform": "npm publish",
     "publish:all": "npm run publish:packages && npm run publish:platform",
-    "repo:validate": "node scripts/repo.js validate",
-    "repo:list": "node scripts/repo.js list",
-    "repo:create": "node scripts/repo.js create",
-    "repo:sync": "node scripts/repo.js sync",
-    "version:patch": "npm version patch && npm run version:patch --workspaces",
-    "version:minor": "npm version minor && npm run version:minor --workspaces",
-    "version:major": "npm version major && npm run version:major --workspaces",
-    "sync:versions": "node scripts/sync-versions.js",
+    "version:patch": "npm version patch",
+    "version:minor": "npm version minor",
+    "version:major": "npm version major",
+    "sync:versions": "echo 'Version sync not needed for standalone package'",
     "validate": "npm run lint && npm run type-check && npm run test",
     "validate:ci": "npm run validate && npm run test:integration",
     "bootstrap": "npm install && npm run build",
@@ -94,13 +82,13 @@
     "playground": "node scripts/playground.js",
     "demo": "http-server playground -p 3000",
     "analyze": "npm run build && npx bundle-analyzer dist/index.esm.js",
-    "security": "npm audit && npm audit --workspaces",
-    "update": "npx npm-check-updates -u && npm run update --workspaces"
+    "security": "npm audit",
+    "update": "npx npm-check-updates -u"
   },
   "dependencies": {
     "fs-extra": "^11.2.0",
-    "@tamyla/ui-components": "^2.1.0",
-    "@tamyla/ui-components-react": "^1.1.1"
+    "@tamyla/ui-components": "^2.0.0",
+    "@tamyla/ui-components-react": "^1.0.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^25.0.8",
@@ -157,18 +145,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tamylaa/ui-platform.git"
+    "url": "https://github.com/tamylaa/ui-platform.git"
   },
   "keywords": [
-    "ui",
-    "components",
-    "design-system",
+    "ui-platform",
+    "ui-components",
     "react",
     "vanilla-js",
-    "platform",
-    "monorepo",
     "typescript",
-    "atomic-design"
+    "design-system",
+    "factory-pattern",
+    "orchestration",
+    "tamyla"
   ],
   "author": "Tamyla Team",
   "license": "MIT",

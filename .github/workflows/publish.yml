@@ -117,7 +117,7 @@ jobs:
     
     - name: Publish to NPM
       env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_GITHUB_ACTION_AUTO }}
       run: |
         # Check if this version is already published
         VERSION="${{ steps.package-version.outputs.version }}"
