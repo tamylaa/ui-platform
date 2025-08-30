@@ -1,6 +1,6 @@
 /**
  * React Exports
- * 
+ *
  * React-specific components and utilities
  */
 
@@ -29,7 +29,7 @@ export const create = reactPlatform.create;
 export { reactPlatform as platform };
 
 // React-specific utilities
-export const PlatformProvider = ({ children, theme = 'default' }: any) => {
+export const PlatformProvider = ({ children, theme = 'default' }: { children: unknown; theme?: string }) => {
   // This would be a proper React context provider
   // For now, just return children with theme applied
   if (typeof window !== 'undefined') {

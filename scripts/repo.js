@@ -36,16 +36,16 @@ class RepositoryManager {
       sourcePath = path.join(this.npmDir, `${packageName}-publish`);
     } else {
       const packages = await PackageManager.listWorkspacePackages(this.workspaceRoot);
-      const sourcePackage = packages.find(pkg => 
-        pkg.name === packageName || 
+      const sourcePackage = packages.find(pkg =>
+        pkg.name === packageName ||
         pkg.directory.includes(packageName)
       );
-      
+
       if (!sourcePackage) {
         Logger.error(`Package ${packageName} not found in workspace`);
         return false;
       }
-      
+
       sourcePath = sourcePackage.path;
     }
 
@@ -58,7 +58,7 @@ class RepositoryManager {
     // 3. Get package information
     const packageManager = new PackageManager(sourcePath);
     const packageInfo = await packageManager.getPackageInfo();
-    
+
     if (!packageInfo) {
       Logger.error('Could not read package.json');
       return false;
@@ -104,16 +104,16 @@ class RepositoryManager {
       sourcePath = path.join(this.npmDir, `${packageName}-publish`);
     } else {
       const packages = await PackageManager.listWorkspacePackages(this.workspaceRoot);
-      const sourcePackage = packages.find(pkg => 
-        pkg.name === packageName || 
+      const sourcePackage = packages.find(pkg =>
+        pkg.name === packageName ||
         pkg.directory.includes(packageName)
       );
-      
+
       if (!sourcePackage) {
         Logger.error(`Package ${packageName} not found in workspace`);
         return false;
       }
-      
+
       sourcePath = sourcePackage.path;
     }
 
@@ -126,7 +126,7 @@ class RepositoryManager {
     // 3. Sync with remote repository
     const gitHubManager = new GitHubManager(sourcePath);
     await gitHubManager.syncWithRemote();
-    
+
     const commitSuccess = await gitHubManager.commitChanges('Update package');
     if (commitSuccess) {
       const pushSuccess = await gitHubManager.pushToRemote();
@@ -142,10 +142,10 @@ class RepositoryManager {
 
   async listRepositories() {
     Logger.header('Available Packages for Repository Creation');
-    
+
     // List packages from workspace
     const packages = await PackageManager.listWorkspacePackages(this.workspaceRoot);
-    
+
     if (packages.length === 0) {
       Logger.warning('No packages found in workspace');
       return;
@@ -161,7 +161,7 @@ class RepositoryManager {
       for (const dir of npmContents) {
         const packagePath = path.join(this.npmDir, dir);
         const packageJsonPath = path.join(packagePath, 'package.json');
-        
+
         if (await FileUtils.pathExists(packageJsonPath)) {
           const packageJson = await FileUtils.safeReadJson(packageJsonPath);
           if (packageJson) {
@@ -182,7 +182,7 @@ class RepositoryManager {
 
   async validateEnvironment() {
     Logger.header('Environment Validation for Repository Management');
-    
+
     // Check GitHub authentication
     const githubAuth = await GitHubManager.checkGitHubAuth();
     if (githubAuth.authenticated) {
@@ -201,7 +201,7 @@ async function main() {
   const args = process.argv.slice(2);
   const command = args[0];
   const packageName = args[1];
-  
+
   const repoManager = new RepositoryManager();
 
   // Parse options
@@ -214,53 +214,53 @@ async function main() {
 
   try {
     switch (command) {
-      case 'validate':
-        await repoManager.validateEnvironment();
-        break;
+    case 'validate':
+      await repoManager.validateEnvironment();
+      break;
 
-      case 'list':
-        await repoManager.listRepositories();
-        break;
+    case 'list':
+      await repoManager.listRepositories();
+      break;
 
-      case 'create':
-        if (!packageName) {
-          Logger.error('Package name required. Usage: node repo.js create <package-name>');
-          process.exit(1);
-        }
-        
-        const envValid = await repoManager.validateEnvironment();
-        if (!envValid) {
-          Logger.error('Environment validation failed.');
-          process.exit(1);
-        }
-        
-        const createSuccess = await repoManager.createRepository(packageName, options);
-        process.exit(createSuccess ? 0 : 1);
-        break;
+    case 'create':
+      if (!packageName) {
+        Logger.error('Package name required. Usage: node repo.js create <package-name>');
+        process.exit(1);
+      }
 
-      case 'sync':
-        if (!packageName) {
-          Logger.error('Package name required. Usage: node repo.js sync <package-name>');
-          process.exit(1);
-        }
-        
-        const syncSuccess = await repoManager.syncRepository(packageName, options);
-        process.exit(syncSuccess ? 0 : 1);
-        break;
+      const envValid = await repoManager.validateEnvironment();
+      if (!envValid) {
+        Logger.error('Environment validation failed.');
+        process.exit(1);
+      }
 
-      default:
-        Logger.info('Usage:');
-        Logger.info('  node repo.js validate                  - Validate environment');
-        Logger.info('  node repo.js list                      - List available packages');
-        Logger.info('  node repo.js create <package-name>     - Create GitHub repository');
-        Logger.info('  node repo.js sync <package-name>       - Sync with remote repository');
-        Logger.info('');
-        Logger.info('Options:');
-        Logger.info('  --description="..."  Repository description');
-        Logger.info('  --private            Create private repository');
-        Logger.info('  --homepage="..."     Repository homepage URL');
-        Logger.info('  --from-source        Use source directory (default: npm directory)');
-        break;
+      const createSuccess = await repoManager.createRepository(packageName, options);
+      process.exit(createSuccess ? 0 : 1);
+      break;
+
+    case 'sync':
+      if (!packageName) {
+        Logger.error('Package name required. Usage: node repo.js sync <package-name>');
+        process.exit(1);
+      }
+
+      const syncSuccess = await repoManager.syncRepository(packageName, options);
+      process.exit(syncSuccess ? 0 : 1);
+      break;
+
+    default:
+      Logger.info('Usage:');
+      Logger.info('  node repo.js validate                  - Validate environment');
+      Logger.info('  node repo.js list                      - List available packages');
+      Logger.info('  node repo.js create <package-name>     - Create GitHub repository');
+      Logger.info('  node repo.js sync <package-name>       - Sync with remote repository');
+      Logger.info('');
+      Logger.info('Options:');
+      Logger.info('  --description="..."  Repository description');
+      Logger.info('  --private            Create private repository');
+      Logger.info('  --homepage="..."     Repository homepage URL');
+      Logger.info('  --from-source        Use source directory (default: npm directory)');
+      break;
     }
   } catch (error) {
     Logger.error(`Operation failed: ${error.message}`);
@@ -268,7 +268,7 @@ async function main() {
   }
 }
 
-if (import.meta.url === `file:///${process.argv[1].replace(/\\/g, '/')}` || 
+if (import.meta.url === `file:///${process.argv[1].replace(/\\/g, '/')}` ||
     import.meta.url === `file://${process.argv[1]}`) {
   main().catch(console.error);
 }

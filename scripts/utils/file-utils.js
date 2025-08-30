@@ -87,7 +87,7 @@ export class FileUtils {
 
   static async findPackageRoot(startPath = process.cwd()) {
     let currentPath = startPath;
-    
+
     while (currentPath !== path.dirname(currentPath)) {
       const packageJsonPath = path.join(currentPath, 'package.json');
       if (await this.pathExists(packageJsonPath)) {
@@ -95,14 +95,14 @@ export class FileUtils {
       }
       currentPath = path.dirname(currentPath);
     }
-    
+
     return null;
   }
 
   static async validatePackageStructure(packagePath) {
     const requiredFiles = ['package.json'];
     const commonDirs = ['src', 'dist', 'lib', 'build'];
-    
+
     const validation = {
       valid: true,
       issues: [],
@@ -113,7 +113,7 @@ export class FileUtils {
     // Check package.json
     const packageJsonPath = path.join(packagePath, 'package.json');
     validation.hasPackageJson = await this.pathExists(packageJsonPath);
-    
+
     if (!validation.hasPackageJson) {
       validation.valid = false;
       validation.issues.push('Missing package.json');

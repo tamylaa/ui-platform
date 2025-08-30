@@ -1,13 +1,18 @@
 /**
  * Core Platform Type Definitions
- * 
+ *
  * Defines the interfaces and types for the UI Platform system
  */
+
+// Component and theme related types
+export type ThemeConfig = Record<string, unknown>;
+export type TokenConfig = Record<string, unknown>;
+export type ComponentElement = Element | unknown | null;
 
 export interface PlatformConfig {
   framework: 'vanilla' | 'react' | 'auto';
   theme: string;
-  tokens: Record<string, any>;
+  tokens: TokenConfig;
   features: {
     animations: boolean;
     accessibility: boolean;
@@ -17,46 +22,46 @@ export interface PlatformConfig {
 }
 
 export interface ComponentFactory {
-  (type: string, props: any): any;
+  (type: string, props: ComponentProps): ComponentElement;
 }
 
 export interface FrameworkAdapter {
-  createComponent(type: string, props: any): any;
-  updateTheme(theme: any): void;
-  updateTokens(tokens: any): void;
+  createComponent(type: string, props: ComponentProps): ComponentElement;
+  updateTheme(theme: ThemeConfig): void;
+  updateTokens(tokens: TokenConfig): void;
   getFramework(): string;
 }
 
 export interface PlatformInstance {
   // Component factories
-  button: (props: any) => any;
-  card: (props: any) => any;
-  input: (props: any) => any;
-  searchBar: (props: any) => any;
-  actionCard: (props: any) => any;
-  contentCard: (props: any) => any;
-  dashboard: (props: any) => any;
-  searchInterface: (props: any) => any;
-  contentManager: (props: any) => any;
-  enhancedSearch: (props: any) => any;
-  campaignSelector: (props: any) => any;
-  
+  button: (props: Record<string, unknown>) => unknown;
+  card: (props: Record<string, unknown>) => unknown;
+  input: (props: Record<string, unknown>) => unknown;
+  searchBar: (props: Record<string, unknown>) => unknown;
+  actionCard: (props: Record<string, unknown>) => unknown;
+  contentCard: (props: Record<string, unknown>) => unknown;
+  dashboard: (props: Record<string, unknown>) => unknown;
+  searchInterface: (props: Record<string, unknown>) => unknown;
+  contentManager: (props: Record<string, unknown>) => unknown;
+  enhancedSearch: (props: Record<string, unknown>) => unknown;
+  campaignSelector: (props: Record<string, unknown>) => unknown;
+
   // Generic factory
-  create: (type: string, props?: any) => any;
-  
+  create: (type: string, props?: Record<string, unknown>) => unknown;
+
   // Theme management
   setTheme: (themeName: string) => void;
-  getTheme: () => any;
-  
+  getTheme: () => Theme | null;
+
   // Token management
-  getTokens: () => any;
-  updateTokens: (tokens: Record<string, any>) => void;
-  
+  getTokens: () => DesignTokens;
+  updateTokens: (tokens: Record<string, unknown>) => void;
+
   // Utilities
   getConfig: () => PlatformConfig;
   getVersion: () => string;
   getFramework: () => string;
-  debug: () => any;
+  debug: () => Record<string, unknown>;
 }
 
 export interface Theme {
@@ -81,7 +86,10 @@ export interface Theme {
     xl: string;
   };
   typography: {
-    fontFamily: string;
+    fontFamily: {
+      sans: string;
+      mono: string;
+    };
     fontSize: {
       xs: string;
       sm: string;
@@ -93,6 +101,16 @@ export interface Theme {
       normal: number;
       medium: number;
       bold: number;
+    };
+    lineHeight: {
+      normal: number;
+      relaxed: number;
+      loose: number;
+    };
+    letterSpacing: {
+      normal: string;
+      wide: string;
+      wider: string;
     };
   };
   borderRadius: {
@@ -115,7 +133,13 @@ export interface Theme {
 export interface DesignTokens {
   colors: Record<string, string>;
   spacing: Record<string, string>;
-  typography: Record<string, any>;
+  typography: {
+    fontFamily: Record<string, string>;
+    fontSize: Record<string, string>;
+    fontWeight: Record<string, number>;
+    lineHeight: Record<string, number>;
+    letterSpacing: Record<string, string>;
+  };
   borders: Record<string, string>;
   shadows: Record<string, string>;
   transitions: Record<string, string>;
@@ -128,9 +152,9 @@ export interface ComponentProps {
   theme?: Theme;
   tokens?: DesignTokens;
   className?: string;
-  style?: Record<string, any>;
-  children?: any;
-  onClick?: (event: any) => void;
+  style?: Record<string, string | number>;
+  children?: unknown; // Can be ReactNode, HTMLElement, string, etc.
+  onClick?: (event: Event) => void;
   disabled?: boolean;
   loading?: boolean;
 }
@@ -145,7 +169,7 @@ export interface ButtonProps extends ComponentProps {
 export interface CardProps extends ComponentProps {
   title?: string;
   content?: string;
-  footer?: any;
+  footer?: unknown; // Can be React component, HTML element, string, etc.
   padding?: boolean;
   border?: boolean;
   shadow?: boolean;

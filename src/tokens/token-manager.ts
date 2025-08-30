@@ -1,6 +1,6 @@
 /**
  * Design Token Manager
- * 
+ *
  * Centralizes and manages design tokens shared across all components
  */
 
@@ -8,9 +8,9 @@ import type { DesignTokens } from '../types/platform.js';
 
 export class TokenManager {
   private tokens: DesignTokens;
-  private customTokens: Record<string, any>;
+  private customTokens: Record<string, unknown>;
 
-  constructor(customTokens: Record<string, any> = {}) {
+  constructor(customTokens: Record<string, unknown> = {}) {
     this.customTokens = customTokens;
     this.tokens = this.createDefaultTokens();
     this.mergeCustomTokens();
@@ -26,7 +26,7 @@ export class TokenManager {
   /**
    * Update tokens with new values
    */
-  updateTokens(newTokens: Record<string, any>): void {
+  updateTokens(newTokens: Record<string, unknown>): void {
     this.customTokens = { ...this.customTokens, ...newTokens };
     this.mergeCustomTokens();
   }
@@ -244,23 +244,29 @@ export class TokenManager {
    */
   private mergeCustomTokens(): void {
     // Deep merge custom tokens
-    this.tokens = this.deepMerge(this.tokens, this.customTokens);
+    this.tokens = this.deepMerge(
+      this.tokens as unknown as Record<string, unknown>,
+      this.customTokens as unknown as Record<string, unknown>
+    ) as unknown as DesignTokens;
   }
 
   /**
    * Deep merge utility
    */
-  private deepMerge(target: any, source: any): any {
+  private deepMerge(target: Record<string, unknown>, source: Record<string, unknown>): Record<string, unknown> {
     const result = { ...target };
-    
+
     for (const key in source) {
       if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
-        result[key] = this.deepMerge(result[key] || {}, source[key]);
+        result[key] = this.deepMerge(
+          (result[key] || {}) as Record<string, unknown>,
+          source[key] as Record<string, unknown>
+        );
       } else {
         result[key] = source[key];
       }
     }
-    
+
     return result;
   }
 
@@ -269,20 +275,20 @@ export class TokenManager {
    */
   generateCSSCustomProperties(): string {
     const css: string[] = [':root {'];
-    
-    const flattenTokens = (tokens: any, prefix = ''): void => {
+
+    const flattenTokens = (tokens: Record<string, unknown>, prefix = ''): void => {
       for (const [key, value] of Object.entries(tokens)) {
         if (typeof value === 'object' && value !== null) {
-          flattenTokens(value, `${prefix}${key}-`);
+          flattenTokens(value as Record<string, unknown>, `${prefix}${key}-`);
         } else {
           css.push(`  --tmyl-${prefix}${key}: ${value};`);
         }
       }
     };
-    
-    flattenTokens(this.tokens);
+
+    flattenTokens(this.tokens as unknown as Record<string, unknown>);
     css.push('}');
-    
+
     return css.join('\n');
   }
 }

@@ -1,6 +1,6 @@
 /**
  * Vanilla JS Exports
- * 
+ *
  * Direct access to vanilla JavaScript components
  */
 

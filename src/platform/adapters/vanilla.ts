@@ -1,14 +1,14 @@
 /**
  * Vanilla JavaScript Framework Adapter
- * 
+ *
  * Bridges the platform to @tamyla/ui-components (vanilla JS)
  */
 
-import type { FrameworkAdapter, PlatformConfig } from '../../types/platform.js';
+import type { FrameworkAdapter, PlatformConfig, ComponentProps, ThemeConfig, TokenConfig } from '../../types/platform.js';
 
 export class VanillaAdapter implements FrameworkAdapter {
   private config: PlatformConfig;
-  private componentLibrary: any;
+  private componentLibrary?: Record<string, unknown>;
 
   constructor(config: PlatformConfig) {
     this.config = config;
@@ -18,7 +18,7 @@ export class VanillaAdapter implements FrameworkAdapter {
   /**
    * Create a component using the vanilla JS library
    */
-  createComponent(type: string, props: any = {}): HTMLElement {
+  createComponent(type: string, props: ComponentProps = {}): HTMLElement {
     if (!this.componentLibrary) {
       throw new Error('Vanilla JS component library not loaded');
     }
@@ -35,18 +35,18 @@ export class VanillaAdapter implements FrameworkAdapter {
       'button': 'createButton',
       'card': 'createCard',
       'input': 'createInput',
-      
+
       // Molecules
       'searchBar': 'createSearchBar',
       'actionCard': 'createActionCard',
       'contentCard': 'createContentCard',
       'notification': 'createNotification',
       'fileList': 'createFileList',
-      
+
       // Organisms
       'dashboard': 'createDashboard',
       'searchInterface': 'createSearchInterface',
-      
+
       // Applications
       'contentManager': 'createContentManager',
       'enhancedSearch': 'createEnhancedSearch',
@@ -58,21 +58,23 @@ export class VanillaAdapter implements FrameworkAdapter {
       throw new Error(`Unknown component type: ${type}`);
     }
 
-    if (typeof this.componentLibrary[factoryFunction] !== 'function') {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if (typeof (this.componentLibrary as Record<string, any>)[factoryFunction] !== 'function') {
       throw new Error(`Component factory ${factoryFunction} not found in vanilla library`);
     }
 
-    return this.componentLibrary[factoryFunction](enhancedProps);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (this.componentLibrary as Record<string, any>)[factoryFunction](enhancedProps);
   }
 
   /**
    * Update theme for all components
    */
-  updateTheme(theme: any): void {
+  updateTheme(theme: ThemeConfig): void {
     // Apply theme to CSS custom properties
     if (typeof document !== 'undefined') {
       const root = document.documentElement;
-      root.setAttribute('data-theme', theme.name);
+      root.setAttribute('data-theme', String(theme.name || 'default'));
     }
 
     // Update component library theme if it supports it
@@ -84,7 +86,7 @@ export class VanillaAdapter implements FrameworkAdapter {
   /**
    * Update design tokens
    */
-  updateTokens(tokens: any): void {
+  updateTokens(tokens: TokenConfig): void {
     if (this.componentLibrary && typeof this.componentLibrary.updateTokens === 'function') {
       this.componentLibrary.updateTokens(tokens);
     }
@@ -103,10 +105,10 @@ export class VanillaAdapter implements FrameworkAdapter {
   private async loadComponentLibrary(): Promise<void> {
     try {
       // For now, we'll use the mock library since packages aren't migrated yet
-      console.log('Loading vanilla JS component library...');
+      // Loading vanilla JS component library...
       this.componentLibrary = this.createMockLibrary();
     } catch (error) {
-      console.warn('Could not load @tamyla/ui-components:', error);
+      // Could not load @tamyla/ui-components, using mock library
       this.componentLibrary = this.createMockLibrary();
     }
   }
@@ -114,12 +116,12 @@ export class VanillaAdapter implements FrameworkAdapter {
   /**
    * Create mock component library for development/testing
    */
-  private createMockLibrary(): any {
-    const createMockComponent = (type: string) => (props: any) => {
+  private createMockLibrary(): Record<string, unknown> {
+    const createMockComponent = (type: string) => (props: ComponentProps) => {
       const element = document.createElement('div');
       element.className = `tmyl-${type} tmyl-mock-component`;
       element.setAttribute('data-type', type);
-      
+
       // Add basic styling
       element.style.cssText = `
         padding: 1rem;
@@ -131,9 +133,9 @@ export class VanillaAdapter implements FrameworkAdapter {
         text-align: center;
         margin: 0.5rem;
       `;
-      
+
       element.textContent = `Mock ${type} component`;
-      
+
       // Add props as data attributes
       Object.entries(props).forEach(([key, value]) => {
         if (typeof value === 'string' || typeof value === 'number') {
@@ -158,8 +160,8 @@ export class VanillaAdapter implements FrameworkAdapter {
       createContentManager: createMockComponent('contentManager'),
       createEnhancedSearch: createMockComponent('enhancedSearch'),
       createCampaignSelector: createMockComponent('campaignSelector'),
-      setTheme: (theme: any) => console.log('Mock: Theme updated to', theme.name),
-      updateTokens: (tokens: any) => console.log('Mock: Tokens updated', tokens),
+      setTheme: (/* theme: ThemeConfig */) => { /* Mock: Theme updated */ },
+      updateTokens: (/* tokens: TokenConfig */) => { /* Mock: Tokens updated */ },
     };
   }
 }

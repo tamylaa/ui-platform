@@ -10,26 +10,26 @@ import chalk from 'chalk';
 export class ShellUtils {
   static execWithOutput(command, options = {}) {
     try {
-      const output = execSync(command, { 
-        encoding: 'utf8', 
+      const output = execSync(command, {
+        encoding: 'utf8',
         stdio: 'pipe',
-        ...options 
+        ...options
       });
       return { success: true, output: output.trim() };
     } catch (error) {
-      return { 
-        success: false, 
-        error: error.message, 
-        output: error.stdout?.toString() || '' 
+      return {
+        success: false,
+        error: error.message,
+        output: error.stdout?.toString() || ''
       };
     }
   }
 
   static execSilent(command, options = {}) {
     try {
-      execSync(command, { 
+      execSync(command, {
         stdio: 'ignore',
-        ...options 
+        ...options
       });
       return { success: true };
     } catch (error) {
@@ -39,9 +39,9 @@ export class ShellUtils {
 
   static execWithLiveOutput(command, options = {}) {
     try {
-      execSync(command, { 
+      execSync(command, {
         stdio: 'inherit',
-        ...options 
+        ...options
       });
       return { success: true };
     } catch (error) {
@@ -51,9 +51,9 @@ export class ShellUtils {
 
   static async safeGitOperation(command, cwd) {
     console.log(chalk.gray(`   Running: git ${command}`));
-    
+
     const result = this.execWithOutput(`git ${command}`, { cwd });
-    
+
     if (!result.success) {
       // Handle common git conflicts
       if (result.error.includes('divergent branches')) {
@@ -63,7 +63,7 @@ export class ShellUtils {
           return this.execWithOutput(`git ${command}`, { cwd });
         }
       }
-      
+
       if (result.error.includes('conflict')) {
         console.log(chalk.yellow('   Auto-resolving conflicts...'));
         this.execSilent('git add .', { cwd });
@@ -71,7 +71,7 @@ export class ShellUtils {
         return this.execWithOutput(`git ${command}`, { cwd });
       }
     }
-    
+
     return result;
   }
 

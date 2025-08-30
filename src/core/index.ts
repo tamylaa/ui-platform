@@ -1,6 +1,6 @@
 /**
  * Core Exports
- * 
+ *
  * Core platform utilities, theme management, and design system
  */
 
@@ -36,7 +36,10 @@ export const createTheme = (name: string, theme: Partial<Theme>): Theme => {
       xl: '2rem',
     },
     typography: {
-      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      fontFamily: {
+        sans: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+        mono: '"SF Mono", "Monaco", "Inconsolata", "Roboto Mono", "Courier New", monospace',
+      },
       fontSize: {
         xs: '0.75rem',
         sm: '0.875rem',
@@ -48,6 +51,16 @@ export const createTheme = (name: string, theme: Partial<Theme>): Theme => {
         normal: 400,
         medium: 500,
         bold: 700,
+      },
+      lineHeight: {
+        normal: 1.5,
+        relaxed: 1.625,
+        loose: 2,
+      },
+      letterSpacing: {
+        normal: '0em',
+        wide: '0.025em',
+        wider: '0.05em',
       },
     },
     borderRadius: {

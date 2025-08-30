@@ -18,23 +18,23 @@ console.log('📋 Add NPM_GITHUB_ACTION_AUTO secret to these repositories:');
 console.log('===============================================');
 
 const repos = [
-    {
-        name: 'UI Components',
-        url: 'https://github.com/tamylaa/tamyla-ui-components/settings/secrets/actions'
-    },
-    {
-        name: 'UI Components React',
-        url: 'https://github.com/tamylaa/tamyla-ui-components-react/settings/secrets/actions'
-    }
+  {
+    name: 'UI Components',
+    url: 'https://github.com/tamylaa/tamyla-ui-components/settings/secrets/actions'
+  },
+  {
+    name: 'UI Components React',
+    url: 'https://github.com/tamylaa/tamyla-ui-components-react/settings/secrets/actions'
+  }
 ];
 
 repos.forEach((repo, index) => {
-    console.log(`\n${index + 1}. ${repo.name}:`);
-    console.log(`   🔗 Go to: ${repo.url}`);
-    console.log('   ➕ Click "New repository secret"');
-    console.log('   📝 Name: NPM_GITHUB_ACTION_AUTO');
-    console.log('   📋 Value: [paste your NPM_GITHUB_ACTION_AUTO token value]');
-    console.log('   💾 Click "Add secret"');
+  console.log(`\n${index + 1}. ${repo.name}:`);
+  console.log(`   🔗 Go to: ${repo.url}`);
+  console.log('   ➕ Click "New repository secret"');
+  console.log('   📝 Name: NPM_GITHUB_ACTION_AUTO');
+  console.log('   📋 Value: [paste your NPM_GITHUB_ACTION_AUTO token value]');
+  console.log('   💾 Click "Add secret"');
 });
 
 console.log('\n🧪 Test NPM Authentication Locally:');
@@ -55,14 +55,14 @@ console.log('\n🎯 The deployments will succeed once NPM_GITHUB_ACTION_AUTO sec
 
 // If --open flag is provided, open the secret URLs
 if (process.argv.includes('--open')) {
-    import('child_process').then(({ execSync }) => {
-        console.log('\n🌐 Opening GitHub secrets pages...');
-        repos.forEach(repo => {
-            try {
-                execSync(`start "${repo.url}"`, { stdio: 'ignore' });
-            } catch (e) {
-                // Ignore errors - user can open manually
-            }
-        });
+  import('child_process').then(({ execSync }) => {
+    console.log('\n🌐 Opening GitHub secrets pages...');
+    repos.forEach(repo => {
+      try {
+        execSync(`start "${repo.url}"`, { stdio: 'ignore' });
+      } catch (e) {
+        // Ignore errors - user can open manually
+      }
     });
+  });
 }

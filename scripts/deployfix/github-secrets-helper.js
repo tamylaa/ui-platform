@@ -11,18 +11,18 @@ console.log('🔐 GitHub Secrets Setup Assistant');
 console.log('==================================\n');
 
 const repositories = [
-    {
-        name: 'UI Components',
-        url: 'https://github.com/tamylaa/tamyla-ui-components',
-        secretsUrl: 'https://github.com/tamylaa/tamyla-ui-components/settings/secrets/actions',
-        actionsUrl: 'https://github.com/tamylaa/tamyla-ui-components/actions'
-    },
-    {
-        name: 'UI Components React', 
-        url: 'https://github.com/tamylaa/tamyla-ui-components-react',
-        secretsUrl: 'https://github.com/tamylaa/tamyla-ui-components-react/settings/secrets/actions',
-        actionsUrl: 'https://github.com/tamylaa/tamyla-ui-components-react/actions'
-    }
+  {
+    name: 'UI Components',
+    url: 'https://github.com/tamylaa/tamyla-ui-components',
+    secretsUrl: 'https://github.com/tamylaa/tamyla-ui-components/settings/secrets/actions',
+    actionsUrl: 'https://github.com/tamylaa/tamyla-ui-components/actions'
+  },
+  {
+    name: 'UI Components React',
+    url: 'https://github.com/tamylaa/tamyla-ui-components-react',
+    secretsUrl: 'https://github.com/tamylaa/tamyla-ui-components-react/settings/secrets/actions',
+    actionsUrl: 'https://github.com/tamylaa/tamyla-ui-components-react/actions'
+  }
 ];
 
 console.log('📋 Required Setup Steps:');
@@ -38,10 +38,10 @@ console.log('2️⃣ Configure GitHub Secrets:');
 console.log('   For each repository, add NPM_GITHUB_ACTION_AUTO secret:\n');
 
 repositories.forEach((repo, index) => {
-    console.log(`   ${repo.name}:`);
-    console.log(`   • Secrets: ${repo.secretsUrl}`);
-    console.log(`   • Actions: ${repo.actionsUrl}`);
-    console.log('');
+  console.log(`   ${repo.name}:`);
+  console.log(`   • Secrets: ${repo.secretsUrl}`);
+  console.log(`   • Actions: ${repo.actionsUrl}`);
+  console.log('');
 });
 
 console.log('3️⃣ Set Workflow Permissions:');
@@ -63,21 +63,21 @@ console.log('✨ Setup complete! Your deployments should now work.');
 
 // If running with --open flag, open the URLs
 if (process.argv.includes('--open')) {
-    console.log('\n🌐 Opening setup URLs...');
-    
-    // Open NPM tokens page
+  console.log('\n🌐 Opening setup URLs...');
+
+  // Open NPM tokens page
+  try {
+    execSync('start https://www.npmjs.com/settings/tokens', { stdio: 'ignore' });
+  } catch (e) {
+    console.log('Could not automatically open browser. Please visit URLs manually.');
+  }
+
+  // Open repository secrets pages
+  repositories.forEach(repo => {
     try {
-        execSync('start https://www.npmjs.com/settings/tokens', { stdio: 'ignore' });
+      execSync(`start "${repo.secretsUrl}"`, { stdio: 'ignore' });
     } catch (e) {
-        console.log('Could not automatically open browser. Please visit URLs manually.');
+      // Ignore errors - user can open manually
     }
-    
-    // Open repository secrets pages
-    repositories.forEach(repo => {
-        try {
-            execSync(`start "${repo.secretsUrl}"`, { stdio: 'ignore' });
-        } catch (e) {
-            // Ignore errors - user can open manually
-        }
-    });
+  });
 }

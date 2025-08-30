@@ -43,7 +43,7 @@ export default defineConfig([
     external,
     plugins
   },
-  
+
   // Vanilla JS bundle
   {
     input: 'src/vanilla/index.ts',
@@ -62,7 +62,7 @@ export default defineConfig([
     external,
     plugins
   },
-  
+
   // React bundle
   {
     input: 'src/react/index.ts',
@@ -81,7 +81,7 @@ export default defineConfig([
     external,
     plugins
   },
-  
+
   // Core bundle
   {
     input: 'src/core/index.ts',
@@ -100,7 +100,7 @@ export default defineConfig([
     external,
     plugins
   },
-  
+
   // Tokens bundle
   {
     input: 'src/tokens/index.ts',
@@ -119,7 +119,7 @@ export default defineConfig([
     external,
     plugins
   },
-  
+
   // Type definitions
   {
     input: 'src/index.ts',
@@ -130,7 +130,7 @@ export default defineConfig([
     external,
     plugins: [dts()]
   },
-  
+
   // Vanilla types
   {
     input: 'src/vanilla/index.ts',
@@ -141,7 +141,7 @@ export default defineConfig([
     external,
     plugins: [dts()]
   },
-  
+
   // React types
   {
     input: 'src/react/index.ts',
@@ -152,7 +152,7 @@ export default defineConfig([
     external,
     plugins: [dts()]
   },
-  
+
   // Core types
   {
     input: 'src/core/index.ts',
@@ -163,7 +163,7 @@ export default defineConfig([
     external,
     plugins: [dts()]
   },
-  
+
   // Tokens types
   {
     input: 'src/tokens/index.ts',

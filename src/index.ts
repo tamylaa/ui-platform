@@ -1,6 +1,6 @@
 /**
  * Tamyla UI Platform - Main Entry Point
- * 
+ *
  * Unified access to all UI components across frameworks
  */
 

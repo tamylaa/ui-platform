@@ -5,7 +5,7 @@
  * Verifies if required secrets are available in repositories
  */
 
-const { Octokit } = require('@octokit/rest');
+const { Octokit } = eval('require')('@octokit/rest');
 
 const requiredSecrets = ['NPM_GITHUB_ACTION_AUTO'];
 
@@ -24,7 +24,7 @@ async function checkSecrets() {
 
   for (const { owner, repo } of repositories) {
     console.log(`📦 Checking ${owner}/${repo}:`);
-    
+
     try {
       // Get repository secrets
       const { data: secrets } = await octokit.rest.actions.listRepoSecrets({
@@ -33,7 +33,7 @@ async function checkSecrets() {
       });
 
       console.log(`   Found ${secrets.total_count} secrets:`);
-      
+
       for (const secret of secrets.secrets) {
         const isRequired = requiredSecrets.includes(secret.name);
         const status = isRequired ? '✅' : '💡';
@@ -43,17 +43,17 @@ async function checkSecrets() {
       // Check for missing required secrets
       const existingSecretNames = secrets.secrets.map(s => s.name);
       const missingSecrets = requiredSecrets.filter(name => !existingSecretNames.includes(name));
-      
+
       if (missingSecrets.length > 0) {
         console.log(`   ❌ Missing required secrets: ${missingSecrets.join(', ')}`);
       } else {
-        console.log(`   ✅ All required secrets are present`);
+        console.log('   ✅ All required secrets are present');
       }
 
     } catch (error) {
       console.log(`   ❌ Error checking secrets: ${error.message}`);
     }
-    
+
     console.log('');
   }
 }

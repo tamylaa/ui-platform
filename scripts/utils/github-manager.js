@@ -15,27 +15,27 @@ export class GitHubManager {
   }
 
   async createRepository(repoName, options = {}) {
-    const { 
+    const {
       description = '',
       private: isPrivate = false,
       homepage = ''
     } = options;
 
     Logger.info(`Creating GitHub repository: ${repoName}`, 'GITHUB');
-    
+
     const visibility = isPrivate ? '--private' : '--public';
     let command = `gh repo create ${repoName} ${visibility}`;
-    
+
     if (description) {
       command += ` --description "${description}"`;
     }
-    
+
     if (homepage) {
       command += ` --homepage "${homepage}"`;
     }
 
     const result = ShellUtils.execWithOutput(command);
-    
+
     if (result.success) {
       Logger.success(`Repository ${repoName} created successfully`, 'GITHUB');
       return true;
@@ -47,7 +47,7 @@ export class GitHubManager {
 
   async initializeRepository() {
     Logger.info('Initializing Git repository...', 'GIT');
-    
+
     const commands = [
       'git init',
       'git add .',
@@ -68,9 +68,9 @@ export class GitHubManager {
 
   async addRemoteOrigin(repoUrl) {
     Logger.info('Adding remote origin...', 'GIT');
-    
+
     const result = ShellUtils.safeGitOperation(`remote add origin ${repoUrl}`, this.repoPath);
-    
+
     if (result.success) {
       Logger.success('Remote origin added successfully', 'GIT');
       return true;
@@ -82,9 +82,9 @@ export class GitHubManager {
 
   async pushToRemote(branch = 'main') {
     Logger.info(`Pushing to remote branch: ${branch}`, 'GIT');
-    
+
     const result = ShellUtils.safeGitOperation(`push -u origin ${branch}`, this.repoPath);
-    
+
     if (result.success) {
       Logger.success('Pushed to remote successfully', 'GIT');
       return true;
@@ -96,9 +96,9 @@ export class GitHubManager {
 
   async commitChanges(message) {
     Logger.info('Committing changes...', 'GIT');
-    
+
     const status = ShellUtils.checkGitStatus(this.repoPath);
-    
+
     if (!status.hasChanges) {
       Logger.info('No changes to commit', 'GIT');
       return true;
@@ -123,7 +123,7 @@ export class GitHubManager {
 
   async syncWithRemote() {
     Logger.info('Syncing with remote repository...', 'GIT');
-    
+
     const commands = [
       'fetch origin',
       'pull origin main --rebase'
@@ -148,9 +148,9 @@ export class GitHubManager {
 
   async cloneRepository(repoUrl, targetPath) {
     Logger.info(`Cloning repository: ${repoUrl}`, 'GITHUB');
-    
+
     const result = ShellUtils.execWithOutput(`git clone ${repoUrl} ${targetPath}`);
-    
+
     if (result.success) {
       Logger.success('Repository cloned successfully', 'GITHUB');
       return true;
@@ -162,7 +162,7 @@ export class GitHubManager {
 
   async setupRepositoryFromPackage(packagePath, repoName, options = {}) {
     Logger.header(`Setting up GitHub repository for ${repoName}`);
-    
+
     // 1. Create GitHub repository
     const created = await this.createRepository(repoName, options);
     if (!created) return false;

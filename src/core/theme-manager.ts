@@ -1,6 +1,6 @@
 /**
  * Theme Manager
- * 
+ *
  * Manages themes and provides theme switching capabilities
  */
 
@@ -32,7 +32,7 @@ export class ThemeManager {
   setTheme(themeName: string): void {
     const theme = this.themes.get(themeName);
     if (!theme) {
-      console.warn(`Theme "${themeName}" not found. Using default theme.`);
+      // Theme not found, fall back to default
       this.currentTheme = this.themes.get('default')!;
       return;
     }
@@ -70,7 +70,10 @@ export class ThemeManager {
       throw new Error(`Base theme "${baseTheme}" not found`);
     }
 
-    const newTheme: Theme = this.deepMerge(base, overrides);
+    const newTheme: Theme = this.deepMerge(
+      base as unknown as Record<string, unknown>,
+      overrides as unknown as Record<string, unknown>
+    ) as unknown as Theme;
     newTheme.name = name;
     this.registerTheme(name, newTheme);
     return newTheme;
@@ -105,7 +108,10 @@ export class ThemeManager {
         xl: tokens.spacing[8],
       },
       typography: {
-        fontFamily: tokens.typography.fontFamily.sans,
+        fontFamily: {
+          sans: tokens.typography.fontFamily.sans,
+          mono: tokens.typography.fontFamily.mono,
+        },
         fontSize: {
           xs: tokens.typography.fontSize.xs,
           sm: tokens.typography.fontSize.sm,
@@ -117,6 +123,16 @@ export class ThemeManager {
           normal: tokens.typography.fontWeight.normal,
           medium: tokens.typography.fontWeight.medium,
           bold: tokens.typography.fontWeight.bold,
+        },
+        lineHeight: {
+          normal: tokens.typography.lineHeight.normal,
+          relaxed: tokens.typography.lineHeight.relaxed,
+          loose: tokens.typography.lineHeight.loose,
+        },
+        letterSpacing: {
+          normal: tokens.typography.letterSpacing.normal,
+          wide: tokens.typography.letterSpacing.wide,
+          wider: tokens.typography.letterSpacing.wider,
         },
       },
       borderRadius: {
@@ -208,12 +224,19 @@ export class ThemeManager {
     });
 
     // Apply typography variables
-    root.style.setProperty('--tmyl-font-family', theme.typography.fontFamily);
+    root.style.setProperty('--tmyl-font-family-sans', theme.typography.fontFamily.sans);
+    root.style.setProperty('--tmyl-font-family-mono', theme.typography.fontFamily.mono);
     Object.entries(theme.typography.fontSize).forEach(([key, value]) => {
       root.style.setProperty(`--tmyl-font-size-${key}`, value);
     });
     Object.entries(theme.typography.fontWeight).forEach(([key, value]) => {
       root.style.setProperty(`--tmyl-font-weight-${key}`, value.toString());
+    });
+    Object.entries(theme.typography.lineHeight).forEach(([key, value]) => {
+      root.style.setProperty(`--tmyl-line-height-${key}`, value.toString());
+    });
+    Object.entries(theme.typography.letterSpacing).forEach(([key, value]) => {
+      root.style.setProperty(`--tmyl-letter-spacing-${key}`, value);
     });
 
     // Apply border radius variables
@@ -236,17 +259,20 @@ export class ThemeManager {
   /**
    * Deep merge utility
    */
-  private deepMerge(target: any, source: any): any {
+  private deepMerge(target: Record<string, unknown>, source: Record<string, unknown>): Record<string, unknown> {
     const result = { ...target };
-    
+
     for (const key in source) {
       if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
-        result[key] = this.deepMerge(result[key] || {}, source[key]);
+        result[key] = this.deepMerge(
+          (result[key] || {}) as Record<string, unknown>,
+          source[key] as Record<string, unknown>
+        );
       } else {
         result[key] = source[key];
       }
     }
-    
+
     return result;
   }
 
@@ -258,20 +284,20 @@ export class ThemeManager {
     if (!theme) return '';
 
     const css: string[] = [];
-    
+
     css.push(`/* ${theme.name} theme */`);
     css.push(`.tmyl-theme-${theme.name} {`);
-    
+
     // Colors
     Object.entries(theme.colors).forEach(([key, value]) => {
       css.push(`  --tmyl-color-${key}: ${value};`);
     });
-    
+
     // Spacing
     Object.entries(theme.spacing).forEach(([key, value]) => {
       css.push(`  --tmyl-spacing-${key}: ${value};`);
     });
-    
+
     // Typography
     css.push(`  --tmyl-font-family: ${theme.typography.fontFamily};`);
     Object.entries(theme.typography.fontSize).forEach(([key, value]) => {
@@ -280,19 +306,19 @@ export class ThemeManager {
     Object.entries(theme.typography.fontWeight).forEach(([key, value]) => {
       css.push(`  --tmyl-font-weight-${key}: ${value};`);
     });
-    
+
     // Border radius
     Object.entries(theme.borderRadius).forEach(([key, value]) => {
       css.push(`  --tmyl-radius-${key}: ${value};`);
     });
-    
+
     // Shadows
     Object.entries(theme.shadows).forEach(([key, value]) => {
       css.push(`  --tmyl-shadow-${key}: ${value};`);
     });
-    
+
     css.push('}');
-    
+
     return css.join('\n');
   }
 

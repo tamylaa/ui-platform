@@ -34,8 +34,8 @@ class PublishManager {
 
     // 1. Find package in workspace
     const packages = await PackageManager.listWorkspacePackages(this.workspaceRoot);
-    const sourcePackage = packages.find(pkg => 
-      pkg.name === packageName || 
+    const sourcePackage = packages.find(pkg =>
+      pkg.name === packageName ||
       pkg.directory.includes(packageName)
     );
 
@@ -92,7 +92,7 @@ class PublishManager {
       Logger.step(5, 'Creating GitHub repository');
       const gitHubManager = new GitHubManager(publishPath);
       const packageInfo = await publishPackageManager.getPackageInfo();
-      
+
       const repoOptions = {
         description: packageInfo.description || `${packageName} package`,
         homepage: packageInfo.homepage || '',
@@ -100,8 +100,8 @@ class PublishManager {
       };
 
       const repoSetupSuccess = await gitHubManager.setupRepositoryFromPackage(
-        publishPath, 
-        packageName, 
+        publishPath,
+        packageName,
         repoOptions
       );
 
@@ -114,7 +114,7 @@ class PublishManager {
     // 5. Publish to NPM
     Logger.step(6, 'Publishing to NPM');
     const publishSuccess = await publishPackageManager.publishPackage();
-    
+
     if (publishSuccess) {
       Logger.success(`Package ${packageName} published successfully!`);
       return true;
@@ -126,9 +126,9 @@ class PublishManager {
 
   async listPackages() {
     Logger.header('Workspace Packages');
-    
+
     const packages = await PackageManager.listWorkspacePackages(this.workspaceRoot);
-    
+
     if (packages.length === 0) {
       Logger.warning('No packages found in workspace');
       return;
@@ -139,7 +139,7 @@ class PublishManager {
 
   async validateEnvironment() {
     Logger.header('Environment Validation');
-    
+
     // Check NPM authentication
     const npmAuth = ShellUtils.checkNpmAuth();
     if (npmAuth.authenticated) {
@@ -176,7 +176,7 @@ async function main() {
   const args = process.argv.slice(2);
   const command = args[0];
   const packageName = args[1];
-  
+
   const publisher = new PublishManager();
 
   // Parse options
@@ -190,43 +190,43 @@ async function main() {
 
   try {
     switch (command) {
-      case 'validate':
-        await publisher.validateEnvironment();
-        break;
+    case 'validate':
+      await publisher.validateEnvironment();
+      break;
 
-      case 'list':
-        await publisher.listPackages();
-        break;
+    case 'list':
+      await publisher.listPackages();
+      break;
 
-      case 'publish':
-        if (!packageName) {
-          Logger.error('Package name required. Usage: node publish.js publish <package-name>');
-          process.exit(1);
-        }
-        
-        const envValid = await publisher.validateEnvironment();
-        if (!envValid && !options.force) {
-          Logger.error('Environment validation failed. Use --force to continue anyway.');
-          process.exit(1);
-        }
-        
-        const success = await publisher.publishPackage(packageName, options);
-        process.exit(success ? 0 : 1);
-        break;
+    case 'publish':
+      if (!packageName) {
+        Logger.error('Package name required. Usage: node publish.js publish <package-name>');
+        process.exit(1);
+      }
 
-      default:
-        Logger.info('Usage:');
-        Logger.info('  node publish.js validate                 - Validate environment');
-        Logger.info('  node publish.js list                     - List available packages');
-        Logger.info('  node publish.js publish <package-name>   - Publish package');
-        Logger.info('');
-        Logger.info('Options:');
-        Logger.info('  --no-validate    Skip package validation');
-        Logger.info('  --no-build       Skip build step');
-        Logger.info('  --no-test        Skip test publish');
-        Logger.info('  --create-repo    Create GitHub repository');
-        Logger.info('  --force          Continue on errors');
-        break;
+      const envValid = await publisher.validateEnvironment();
+      if (!envValid && !options.force) {
+        Logger.error('Environment validation failed. Use --force to continue anyway.');
+        process.exit(1);
+      }
+
+      const success = await publisher.publishPackage(packageName, options);
+      process.exit(success ? 0 : 1);
+      break;
+
+    default:
+      Logger.info('Usage:');
+      Logger.info('  node publish.js validate                 - Validate environment');
+      Logger.info('  node publish.js list                     - List available packages');
+      Logger.info('  node publish.js publish <package-name>   - Publish package');
+      Logger.info('');
+      Logger.info('Options:');
+      Logger.info('  --no-validate    Skip package validation');
+      Logger.info('  --no-build       Skip build step');
+      Logger.info('  --no-test        Skip test publish');
+      Logger.info('  --create-repo    Create GitHub repository');
+      Logger.info('  --force          Continue on errors');
+      break;
     }
   } catch (error) {
     Logger.error(`Operation failed: ${error.message}`);
@@ -234,7 +234,7 @@ async function main() {
   }
 }
 
-if (import.meta.url === `file:///${process.argv[1].replace(/\\/g, '/')}` || 
+if (import.meta.url === `file:///${process.argv[1].replace(/\\/g, '/')}` ||
     import.meta.url === `file://${process.argv[1]}`) {
   main().catch(console.error);
 }

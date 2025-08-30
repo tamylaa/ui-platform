@@ -35,11 +35,11 @@ try {
   const nodeAuthTokenPattern = /NODE_AUTH_TOKEN:\s*\$\{\{\s*secrets\.NPM_GITHUB_ACTION_AUTO\s*\}\}/;
   const hasNodeAuthToken = nodeAuthTokenPattern.test(workflowContent);
   console.log(`\n2. NODE_AUTH_TOKEN Mapping: ${hasNodeAuthToken ? '✅ Correct' : '❌ Missing'}`);
-  
+
   // Check 3: NPM registry setup
   const hasRegistryUrl = workflowContent.includes('registry-url:');
   const hasScope = workflowContent.includes('scope:');
-  console.log(`\n3. NPM Registry Setup:`);
+  console.log('\n3. NPM Registry Setup:');
   console.log(`   Registry URL: ${hasRegistryUrl ? '✅ Set' : '❌ Missing'}`);
   console.log(`   Scope: ${hasScope ? '✅ Set' : '❌ Missing'}`);
 

@@ -2,7 +2,7 @@
 
 /**
  * Platform Setup Script
- * 
+ *
  * Initializes the UI Platform with all necessary dependencies
  * and configurations for both development and production use.
  */
@@ -18,16 +18,16 @@ const platformRoot = path.join(__dirname, '..');
 
 async function setupPlatform() {
   console.log('🔧 Setting up Tamyla UI Platform...\n');
-  
+
   try {
     // 1. Install dependencies
     console.log('📦 Installing dependencies...');
-    execSync('npm install', { 
-      cwd: platformRoot, 
+    execSync('npm install', {
+      cwd: platformRoot,
       stdio: 'inherit',
       encoding: 'utf8'
     });
-    
+
     // 2. Create necessary directories
     console.log('\n📁 Creating directory structure...');
     const directories = [
@@ -38,32 +38,32 @@ async function setupPlatform() {
       '.storybook',
       'coverage'
     ];
-    
+
     for (const dir of directories) {
       await fs.ensureDir(path.join(platformRoot, dir));
       console.log(`   Created: ${dir}/`);
     }
-    
+
     // 3. Create development configuration files
     await createDevelopmentFiles();
-    
+
     // 4. Create example files
     await createExampleFiles();
-    
+
     // 5. Build packages if they exist
     try {
       console.log('\n🔨 Building packages...');
-      execSync('npm run build:packages', { 
-        cwd: platformRoot, 
-        stdio: 'inherit' 
+      execSync('npm run build:packages', {
+        cwd: platformRoot,
+        stdio: 'inherit'
       });
     } catch (error) {
       console.log('   No packages to build yet (this is normal for initial setup)');
     }
-    
+
     // 6. Create documentation
     await createDocumentation();
-    
+
     console.log('\n✨ Platform setup completed successfully!');
     console.log('\n🚀 Quick start:');
     console.log('  npm run dev        # Start development servers');
@@ -71,7 +71,7 @@ async function setupPlatform() {
     console.log('  npm run test       # Run tests');
     console.log('  npm run storybook  # Launch Storybook');
     console.log('  npm run playground # Open development playground');
-    
+
   } catch (error) {
     console.error('❌ Setup failed:', error);
     process.exit(1);
@@ -80,7 +80,7 @@ async function setupPlatform() {
 
 async function createDevelopmentFiles() {
   console.log('\n⚙️  Creating development configuration...');
-  
+
   // .gitignore
   const gitignore = `# Dependencies
 node_modules/
@@ -137,10 +137,10 @@ storybook-static/
 tmp/
 temp/
 `;
-  
+
   await fs.writeFile(path.join(platformRoot, '.gitignore'), gitignore);
   console.log('   Created .gitignore');
-  
+
   // .eslintrc.js
   const eslintrc = `module.exports = {
   root: true,
@@ -179,10 +179,10 @@ temp/
   },
   ignorePatterns: ['dist/', 'node_modules/', 'coverage/', 'storybook-static/']
 };`;
-  
+
   await fs.writeFile(path.join(platformRoot, '.eslintrc.js'), eslintrc);
   console.log('   Created .eslintrc.js');
-  
+
   // .prettierrc
   const prettierrc = `{
   "semi": true,
@@ -192,10 +192,10 @@ temp/
   "tabWidth": 2,
   "useTabs": false
 }`;
-  
+
   await fs.writeFile(path.join(platformRoot, '.prettierrc'), prettierrc);
   console.log('   Created .prettierrc');
-  
+
   // jest.config.js
   const jestConfig = `module.exports = {
   preset: 'ts-jest',
@@ -220,14 +220,14 @@ temp/
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html']
 };`;
-  
+
   await fs.writeFile(path.join(platformRoot, 'jest.config.js'), jestConfig);
   console.log('   Created jest.config.js');
 }
 
 async function createExampleFiles() {
   console.log('\n📝 Creating example files...');
-  
+
   // Playground HTML
   const playgroundHtml = `<!DOCTYPE html>
 <html lang="en">
@@ -287,10 +287,10 @@ async function createExampleFiles() {
     </div>
 </body>
 </html>`;
-  
+
   await fs.writeFile(path.join(platformRoot, 'playground', 'index.html'), playgroundHtml);
   console.log('   Created playground/index.html');
-  
+
   // Playground JavaScript
   const playgroundJs = `import { Platform, platform } from '../dist/index.esm.js';
 
@@ -370,14 +370,14 @@ function createThemeControls() {
         controls.appendChild(button);
     });
 }`;
-  
+
   await fs.writeFile(path.join(platformRoot, 'playground', 'playground.js'), playgroundJs);
   console.log('   Created playground/playground.js');
 }
 
 async function createDocumentation() {
   console.log('\n📚 Creating documentation structure...');
-  
+
   const docsStructure = [
     'getting-started.md',
     'architecture.md',
@@ -386,7 +386,7 @@ async function createDocumentation() {
     'migration.md',
     'contributing.md'
   ];
-  
+
   for (const doc of docsStructure) {
     const docPath = path.join(platformRoot, 'docs', doc);
     if (!await fs.pathExists(docPath)) {

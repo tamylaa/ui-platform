@@ -4,6 +4,31 @@ This directory contains modular automation scripts for managing the UI Platform 
 
 ## Core Scripts
 
+### `eslint-platform-compatibility-check.js` - ESLint Compatibility Testing
+**Comprehensive ESLint configuration compatibility test for entire UI Platform:**
+
+- 🧪 **Multi-Package Testing**: Tests all packages (root, ui-components, ui-components-react)
+- 📦 **ESM Module Resolution**: Validates ESLint 9 flat config loading across packages
+- 🔍 **Dependency Validation**: Checks ESLint 9.x and TypeScript ESLint compatibility
+- 🎯 **Lint Execution**: Tests actual linting and reports error/warning counts per package
+- 🏗️ **Build Integration**: Validates build process compatibility for each package
+- 🔧 **Package-Specific Config**: Verifies Jest, DOM globals, React, TypeScript configurations
+- 📊 **Platform Assessment**: Provides comprehensive readiness report for GitHub deployment
+
+```bash
+# Test ESLint configuration across entire platform
+node scripts/eslint-platform-compatibility-check.js
+```
+
+**Output Example:**
+- Package structure validation
+- ESLint 9.x dependency verification
+- ESM module loading tests
+- Error/warning counts per package
+- Build process validation
+- Configuration analysis
+- Final platform deployment recommendation
+
 ### `publish.js` - Package Publishing
 Handles the complete package publishing workflow with validation, building, and NPM publishing.
 

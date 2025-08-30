@@ -30,7 +30,7 @@ export class PackageManager {
 
   async buildPackage() {
     Logger.info('Building package...', 'BUILD');
-    
+
     // Try different build commands
     const buildCommands = [
       'npm run build',
@@ -52,9 +52,9 @@ export class PackageManager {
 
   async validatePackage() {
     Logger.info('Validating package...', 'VALIDATE');
-    
+
     const validation = await FileUtils.validatePackageStructure(this.packagePath);
-    
+
     if (!validation.valid) {
       Logger.error(`Package validation failed: ${validation.issues.join(', ')}`, 'VALIDATE');
       return false;
@@ -69,7 +69,7 @@ export class PackageManager {
     // Check required fields
     const requiredFields = ['name', 'version', 'description'];
     const missingFields = requiredFields.filter(field => !packageJson[field]);
-    
+
     if (missingFields.length > 0) {
       Logger.error(`Missing required fields: ${missingFields.join(', ')}`, 'VALIDATE');
       return false;
@@ -81,11 +81,11 @@ export class PackageManager {
 
   async testPublish() {
     Logger.info('Testing package publish (dry run)...', 'TEST');
-    
-    const result = ShellUtils.execWithOutput('npm publish --dry-run', { 
-      cwd: this.packagePath 
+
+    const result = ShellUtils.execWithOutput('npm publish --dry-run', {
+      cwd: this.packagePath
     });
-    
+
     if (result.success) {
       Logger.success('Dry run successful', 'TEST');
       return true;
@@ -97,12 +97,12 @@ export class PackageManager {
 
   async publishPackage(options = {}) {
     const { tag = 'latest', access = 'public' } = options;
-    
+
     Logger.info('Publishing package to NPM...', 'PUBLISH');
-    
+
     const command = `npm publish --access ${access} --tag ${tag}`;
     const result = ShellUtils.execWithLiveOutput(command, { cwd: this.packagePath });
-    
+
     if (result.success) {
       Logger.success('Package published successfully', 'PUBLISH');
       return true;
@@ -114,7 +114,7 @@ export class PackageManager {
 
   async prepareForPublish(targetPath) {
     Logger.info('Preparing package for publishing...', 'PREPARE');
-    
+
     // Copy package to target directory
     const success = await FileUtils.safeCopy(this.packagePath, targetPath, {
       filter: (src) => {
@@ -132,8 +132,8 @@ export class PackageManager {
           '*.test.js',
           '*.spec.js'
         ];
-        
-        return !excludePatterns.some(pattern => 
+
+        return !excludePatterns.some(pattern =>
           src.includes(pattern) || src.endsWith(pattern.replace('*', ''))
         );
       }
@@ -160,14 +160,14 @@ export class PackageManager {
 
     for (const packagesDir of commonPackagePaths) {
       const packagesPath = path.join(workspaceRoot, packagesDir);
-      
+
       if (await FileUtils.pathExists(packagesPath)) {
         const packageDirs = await FileUtils.getDirectoryContents(packagesPath);
-        
+
         for (const packageDir of packageDirs) {
           const packagePath = path.join(packagesPath, packageDir);
           const packageJsonPath = path.join(packagePath, 'package.json');
-          
+
           if (await FileUtils.pathExists(packageJsonPath)) {
             const packageJson = await FileUtils.safeReadJson(packageJsonPath);
             if (packageJson) {
